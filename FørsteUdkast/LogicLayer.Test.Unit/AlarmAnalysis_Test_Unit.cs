@@ -25,26 +25,29 @@ namespace LogicLayer.Test.Unit
         {
             bool isAlarmOn = false;
             DtoMeassuredDataFs dtoMeassured1 = new DtoMeassuredDataFs();
-            dtoMeassured1.MeassureDoubles.AddRange(sinusValue(100));
+            dtoMeassured1.MeassureDoubles.AddRange(sinusValue(100, 186));
             uut.GetAlarm(dtoMeassured1);
 
             double fallingMeassurement = 100 - staticVariables.PersentageFall;
 
             DtoMeassuredDataFs dtoMeassured2 = new DtoMeassuredDataFs();
-            dtoMeassured2.MeassureDoubles.AddRange(sinusValue(95));
+            dtoMeassured2.MeassureDoubles.AddRange(sinusValue(94, 186));
             isAlarmOn = uut.GetAlarm(dtoMeassured2);
 
             Assert.That(isAlarmOn, Is.True);
         }
 
 
-        private List<double> sinusValue(int verticalForskydning)
+        private List<double> sinusValue(int verticalForskydning, int længde)
         {
             List<double> sinusvaerdier = new List<double>();
-            for (int i = 0; i < 99; i++)
+            for (int i = 0; i < længde; i++)
             {
-                sinusvaerdier.Add(Math.Sin(i * 0.2) * 15 + verticalForskydning);
+                sinusvaerdier.Add(Math.Sin(i * 0.02 * Math.PI)*15 + verticalForskydning);
             }
+
+
+
 
             return sinusvaerdier;
         }

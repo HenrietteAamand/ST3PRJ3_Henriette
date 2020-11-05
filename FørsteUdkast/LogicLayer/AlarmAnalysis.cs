@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using DTO;
 
@@ -15,6 +17,7 @@ namespace LogicLayer
         private double newMAP;
         private bool isFall;
         private double persentage;
+        private double oldMap;
 
         private bool isOverHys = false;
         private StaticVariables staticVariables;
@@ -57,13 +60,12 @@ namespace LogicLayer
                 MAP = MAP / LastSavedMeassurements.Count;
             }
 
-            
+
             hysteresisHigh = MAP + hysteresisSpring;
             hysteresisLow = MAP - hysteresisSpring;
 
             List<int> index = new List<int>();
 
-            isOverHys = false;
             //Her bestemmes ved hvilke index vi registrerer høj
             for (int i = 0; i < LastSavedMeassurements.Count; i++)
             {
@@ -83,24 +85,37 @@ namespace LogicLayer
             //Beregner nu MAP for de nyeste målinger
             double forHowlong = index[index.Count - 1];
             int counter = 1;
-            for (int i = index[0]; i < index[index.Count - 1]; i++)
+            if (index.Count > 1)
             {
-                MAP += LastSavedMeassurements[i];
-                if (i == index[counter])
+                for (int i = index[0]; i <= index[index.Count-1]; i++)
                 {
-                    MAP = MAP / (index[counter] - index[counter - 1]);
-                    if (oldMAP.Count >= alarmperiod)
+                    MAP += LastSavedMeassurements[i];
+                    if (i == index[counter])
                     {
-                        oldMAP.RemoveAt(0);
+                        MAP = MAP / (index[counter] - index[counter - 1]);
+                        if (oldMAP.Count >= alarmperiod)
+                        {
+                            oldMAP.RemoveAt(0);
+                        }
+                        oldMAP.Add(MAP);
+                        MAP = 0;
+                        counter++;
                     }
-                    oldMAP.Add(MAP);
-                    MAP = 0;
-                    counter++;
                 }
             }
 
+            LastSavedMeassurements.RemoveRange(0,index[index.Count-1]);
+            if (LastSavedMeassurements[0] > hysteresisHigh)
+            {
+                isOverHys = true;
+            }
+
             isFall = false;
-            double oldMap = oldMAP[0];
+
+            if (oldMAP.Count > 1)
+            {
+                oldMap = oldMAP[0];
+            }
             
             foreach (double map in oldMAP)
             {
