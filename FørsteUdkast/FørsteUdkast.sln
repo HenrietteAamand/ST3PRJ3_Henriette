@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicLayer", "LogicLayer\LogicLayer.csproj", "{4425BA69-CEFC-4E73-A064-84BE19999CEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLayer", "LogicLayer\LogicLayer.csproj", "{4425BA69-CEFC-4E73-A064-84BE19999CEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{FA981E39-958C-4060-84F3-89282BE12496}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{FA981E39-958C-4060-84F3-89282BE12496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicLayer.Test.Unit", "LogicLayer.Test.Unit\LogicLayer.Test.Unit.csproj", "{97EAD97C-985C-4EC9-80D4-F81F7AE22E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicLayer.Test.Unit", "LogicLayer.Test.Unit\LogicLayer.Test.Unit.csproj", "{97EAD97C-985C-4EC9-80D4-F81F7AE22E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTO", "DTO\DTO.csproj", "{91F871BC-94D3-42CB-A711-4CC271121A1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTO", "DTO\DTO.csproj", "{91F871BC-94D3-42CB-A711-4CC271121A1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiniTests", "MiniTests\MiniTests.csproj", "{8685250D-967F-41A9-A6A7-852B4FD6FA40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{91F871BC-94D3-42CB-A711-4CC271121A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F871BC-94D3-42CB-A711-4CC271121A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91F871BC-94D3-42CB-A711-4CC271121A1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8685250D-967F-41A9-A6A7-852B4FD6FA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8685250D-967F-41A9-A6A7-852B4FD6FA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8685250D-967F-41A9-A6A7-852B4FD6FA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8685250D-967F-41A9-A6A7-852B4FD6FA40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

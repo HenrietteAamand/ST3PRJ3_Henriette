@@ -107,7 +107,8 @@ namespace LogicLayer.Test.Unit
 
             public bool IsPressedStart()
             {
-                return true;
+                isStartPressed = true;
+                return isStartPressed;
             }
 
             public bool WaitForStartPressed()

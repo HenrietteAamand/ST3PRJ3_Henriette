@@ -17,6 +17,7 @@ namespace DTO
             Pulse = pulse;
             Alarm = alarm;
             Date = date;
+            MAP = map;
 
         }
     }
