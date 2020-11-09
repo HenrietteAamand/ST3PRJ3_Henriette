@@ -4,6 +4,6 @@ namespace LogicLayer
 {
     public interface IPulseAnalysis
     {
-        public int GetPulse(DtoMeassuredDataFs meassuredData);
+        public int GetPulse(DtoMeassuredDataFs meassuredData, double map);
     }
 }

@@ -63,7 +63,7 @@ namespace LogicLayer.Test.Unit
         }
 
         [Test]
-        public void MakeZeroPointAdjustment_MockAdjustZeropoint_return1point25()
+        public void MakeZeroPointAdjustment_MockAdjustZeropoint_return1FromDummyZeropoint()
         {
             MockZeroPointAdjusted mockZeroPointAdjusted = new MockZeroPointAdjusted();
             uut.ZeroPointAdjustment = mockZeroPointAdjusted;
@@ -73,13 +73,13 @@ namespace LogicLayer.Test.Unit
         }
 
         [Test]
-        public void MakeZeroPointAdjustment_MockBP_returnTrue()
+        public void MakeZeroPointAdjustment_MockBP_return1point25()
         {
             MockBloodPreassure mockBloodPreassure= new MockBloodPreassure();
             uut.BloodPreassure = mockBloodPreassure;
             uut.MakeZeroPointAdjustment();
 
-            Assert.That(mockBloodPreassure.isZeroPointAdjusted, Is.True);
+            Assert.That(mockBloodPreassure.Atm, Is.EqualTo(1));
         }
 
         [Test]
@@ -131,6 +131,11 @@ namespace LogicLayer.Test.Unit
                 done = true;
             }
 
+            public void TransferZeroPointStarted()
+            {
+                
+            }
+
             public void TransferPatientInfo(object dto_PatientInfo)
             {
                 
@@ -148,6 +153,12 @@ namespace LogicLayer.Test.Unit
         class MockBloodPreassure : IBloodPreassure
         {
             public bool isZeroPointAdjusted = false;
+            public double Atm { get; set; }
+
+            public MockBloodPreassure()
+            {
+                
+            }
             public void AdjustZeroPoint(double zeropointValue)
             {
                 isZeroPointAdjusted = true;
@@ -196,6 +207,11 @@ namespace LogicLayer.Test.Unit
                 
             }
 
+            public void TransferZeroPointStarted()
+            {
+                
+            }
+
             public void TransferPatientInfo(object dto_PatientInfo)
             {
                 
@@ -222,6 +238,8 @@ namespace LogicLayer.Test.Unit
         }
         class DummyBloodPreassure : IBloodPreassure
         {
+            public double Atm { get; set; }
+
             public void AdjustZeroPoint(double zeropintValue)
             {
             }

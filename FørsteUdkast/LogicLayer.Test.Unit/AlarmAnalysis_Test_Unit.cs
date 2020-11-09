@@ -25,46 +25,51 @@ namespace LogicLayer.Test.Unit
         {
             bool isAlarmOn = false;
             DtoMeassuredDataFs dtoMeassured1 = new DtoMeassuredDataFs();
-            dtoMeassured1.MeassureDoubles.AddRange(sinusValue(100, 186));
-            uut.GetAlarm(dtoMeassured1);
+            dtoMeassured1.MeassureDoubles.AddRange(sinusValue(staticVariables.PersentageFall, 186));
+            isAlarmOn = uut.GetAlarm(dtoMeassured1,95);
 
             double fallingMeassurement = 100 - staticVariables.PersentageFall;
-
-            DtoMeassuredDataFs dtoMeassured2 = new DtoMeassuredDataFs();
-            dtoMeassured2.MeassureDoubles.AddRange(sinusValue(94, 186));
-            isAlarmOn = uut.GetAlarm(dtoMeassured2);
-
+            
             Assert.That(isAlarmOn, Is.True);
         }
 
+        [Test]
+        public void GetAarm_addNotFallingMeassurement_returnFalse()
+        {
+            bool isAlarmOn = false;
+            DtoMeassuredDataFs dtoMeassured1 = new DtoMeassuredDataFs();
+            dtoMeassured1.MeassureDoubles.AddRange(sinusValue(0, 186));
+            isAlarmOn = uut.GetAlarm(dtoMeassured1, 95);
 
-        private List<double> sinusValue(int verticalForskydning, int længde)
+            double fallingMeassurement = 100 - staticVariables.PersentageFall;
+
+            Assert.That(isAlarmOn, Is.False);
+        }
+
+
+        private List<double> sinusValue(double verticalForskydning, int længde)
         {
             List<double> sinusvaerdier = new List<double>();
             for (int i = 0; i < længde; i++)
             {
-                sinusvaerdier.Add(Math.Sin(i * 0.02 * Math.PI)*15 + verticalForskydning);
+                sinusvaerdier.Add(Math.Sin(i * 0.02 * Math.PI)*15 + 100 - verticalForskydning);
+            }
+            for (int i = 0; i < længde; i++)
+            {
+                sinusvaerdier.Add(Math.Sin(i * 0.01 * Math.PI) * 15 + 100 - verticalForskydning*2);
+            }
+            for (int i = 0; i < længde; i++)
+            {
+                sinusvaerdier.Add(Math.Sin(i * 0.01 * Math.PI) * 15 + 100 - verticalForskydning * 3);
             }
 
-
-
+            for (int i = 0; i < længde; i++)
+            {
+                sinusvaerdier.Add(Math.Sin(i * 0.01 * Math.PI) * 15 + 100 - verticalForskydning * 4);
+            }
 
             return sinusvaerdier;
         }
 
     }
-
-    //public class DtoMeassuredDataFs
-    //{
-    //    public List<double> MeassureDoubles { get; set; }
-
-    //    public void FillListWithMeassurement(double meassured)
-    //    {
-    //        for (int i = 0; i < 120; i++)
-    //        {
-    //            MeassureDoubles.Add(meassured);
-    //        }
-    //    }
-    //}
-
 }

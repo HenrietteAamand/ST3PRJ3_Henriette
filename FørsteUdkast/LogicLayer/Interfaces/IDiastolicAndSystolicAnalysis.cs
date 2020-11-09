@@ -7,9 +7,8 @@ namespace LogicLayer
 {
     public interface IDiastolicAndSystolicAnalysis
     {
-        public StaticVariables StaticVariables { get; set; }
         public double Diastolic { get; set; }
         public double Systolic { get; set; }
-        public void GetSysAndDiastolic(DtoMeassuredDataFs meassuredData);
+        public void GetSysAndDiastolic(DtoMeassuredDataFs meassuredData, double map);
     }
 }

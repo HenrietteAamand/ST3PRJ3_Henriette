@@ -20,15 +20,16 @@ namespace LogicLayer
             //Venter på, at der bliver trykket start
             //OBS! skal vi her også have mulighed for at ændre switch status? 
             WaitForStartPressed();
+            
+            TransferData.TransferZeroPointStarted();
 
             //Undtagelse 2: advarer om lavt batteriniveau
             //- tænker det kører i en tråd for sig? Så skal vi bare sørge for at låse metoder i TransferDataToBM så der ikke bliver synkroniseringsproblemer 
 
             double zeroPointValue = ZeroPointAdjustment.GetZeroPoint();
-            BloodPreassure.AdjustZeroPoint(zeroPointValue);
+            BloodPreassure.Atm = zeroPointValue;
+
             TransferData.TransferZeroPointDone();
-
-
         }
 
         private void WaitForStartPressed()

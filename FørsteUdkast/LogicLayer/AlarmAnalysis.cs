@@ -39,8 +39,9 @@ namespace LogicLayer
         }
 
         // Tilføjer et sekunds måledata til min lange liste.
-        public bool GetAlarm(DtoMeassuredDataFs _meassuredData)
+        public bool GetAlarm(DtoMeassuredDataFs _meassuredData, double _map)
         {
+            MAP = _map;
             //Sørger for at der kun gemmes 3 målinger/3 sekunder ad gangen. Jeg kopierer dem over i en liste med målinger:
             if (LastSavedMeassurements.Count >= _meassuredData.MeassureDoubles.Count * alarmperiod)
             {
@@ -49,18 +50,7 @@ namespace LogicLayer
 
             LastSavedMeassurements.AddRange(_meassuredData.MeassureDoubles);
 
-            {
-                //Bestem MAB ud fra hvad jeg har i listen - kunne måske være en idé at give med som parameter i metoden i stedet?
-                MAP = 0;
-                foreach (double bloodpreassure in LastSavedMeassurements)
-                {
-                    MAP += bloodpreassure;
-                }
-
-                MAP = MAP / LastSavedMeassurements.Count;
-            }
-
-
+            
             hysteresisHigh = MAP + hysteresisSpring;
             hysteresisLow = MAP - hysteresisSpring;
 

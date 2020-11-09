@@ -1,6 +1,7 @@
 ﻿using DTO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization.Formatters;
 
 namespace LogicLayer
 {
@@ -15,52 +16,84 @@ namespace LogicLayer
         private double hysteresisLow;
         private double hysteresisHigh;
         private double mAP;
+        private bool canAddDiastolic = false;
+        private bool canAddSystolic = false;
+        private int diastolicIndex;
+        private int systolicIndex;
 
-        public StaticVariables StaticVariables { get; set; }
+        private StaticVariables StaticVariables;
         public double Diastolic { get; set; }
         public double Systolic { get; set; }
 
-        public void GetSysAndDiastolic(DtoMeassuredDataFs meassuredData)
+        public DiastolicAndSystolicAnalysis(StaticVariables staticVariables)
         {
-            GetMAP(meassuredData);
+            StaticVariables = staticVariables;
+        }
+
+        public void GetSysAndDiastolic(DtoMeassuredDataFs meassuredData, double map)
+        {
+            mAP = map;
             hysteresisLow = mAP - 5;
             hysteresisHigh = mAP + 5;
             Diastolic = mAP;
             Systolic = mAP;
 
+
             //Opdaterer MeassurementList.
             //Bruger 3 for at være sikker på, at sekvensen indeholder både en systolisk værdi og en diastolisk værdi
             if (MeassurementsList.Count >= StaticVariables.SampleFrequense * 3)
             {
-                MeassurementsList.RemoveRange(0, 120);
+                MeassurementsList.RemoveRange(0, meassuredData.MeassureDoubles.Count-1);
             }
             MeassurementsList.AddRange(meassuredData.MeassureDoubles);
 
             //Finder diastolisk og systolisk værdier - algoritme
-            foreach (double meassurement in MeassurementsList)
+            for (int i = 0; i < MeassurementsList.Count; i++)
             {
-                if (meassurement < Diastolic)
+                if (MeassurementsList[i] < Diastolic)
                 {
-                    Diastolic = meassurement;
+                    Diastolic = MeassurementsList[i];
+                    diastolicIndex = i;
+                    canAddDiastolic = true;
                 }
 
-                if (meassurement > hysteresisHigh)
+                else if (MeassurementsList[i] > hysteresisHigh && canAddDiastolic == true)
                 {
                     diastolicValues.Add(Diastolic);
+                    canAddDiastolic = false;
                     Diastolic = mAP;
                 }
 
-                if (meassurement > Systolic)
+                else if (MeassurementsList[i] > Systolic)
                 {
-                    Systolic = meassurement;
+                    Systolic = MeassurementsList[i];
+                    systolicIndex = i;
+                    canAddSystolic = true;
                 }
 
-                if (meassurement < hysteresisLow)
+                else if (MeassurementsList[i] < hysteresisLow && canAddSystolic == true)
                 {
                     systolicValues.Add(Systolic);
                     Systolic = mAP;
+                    canAddSystolic = false;
+                }
+
+            }
+
+            if (MeassurementsList.Count >= systolicIndex + 3 && MeassurementsList.Count >= diastolicIndex + 3)
+            {
+                //Tjekker om jeg er har at gøre med en diastolisk værdi, men ikke er kommet over min øvre hysteresegrænse endnu
+                if (Diastolic != diastolicValues.Last() && Diastolic < MeassurementsList[diastolicIndex+3])
+                {
+                    diastolicValues.Add(Diastolic);
+                }
+
+                if (Systolic != systolicValues.Last() && Systolic > MeassurementsList[systolicIndex + 3])
+                {
+                    systolicValues.Add(Systolic);
                 }
             }
+
 
             // tager den sidste værdi og gemmer denne. 
             Systolic = systolicValues.Last();
@@ -70,37 +103,6 @@ namespace LogicLayer
             systolicValues.Clear();
             diastolicValues.Clear();
 
-        }
-
-        public double GetMAP(DtoMeassuredDataFs meassuredData)
-        {
-            //Vi beregner mean arterial bloodpreassure over 3 perioder. De gemmes i en liste
-            double singleMAP = 0;
-
-            //Beregner MAP af de nyeste data
-            foreach (double bloodPrreassure in meassuredData.MeassureDoubles)
-            {
-                singleMAP += bloodPrreassure;
-            }
-            singleMAP = singleMAP / meassuredData.MeassureDoubles.Count;
-
-            //Gemmer det nye MAP i listen
-            if (MAPList.Count >= 3)
-            {
-                MAPList.RemoveAt(0);
-            }
-            MAPList.Add(singleMAP);
-
-            //Beregner nu MAP for de seneste fire målinger
-            mAP = 0;
-            foreach (double MAP in MAPList)
-            {
-                mAP += MAP;
-            }
-
-            mAP = mAP / MAPList.Count;
-
-            return mAP;
         }
     }
 }

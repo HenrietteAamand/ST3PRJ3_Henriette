@@ -2,6 +2,6 @@
 {
     public interface IBloodPreassure
     {
-        public void AdjustZeroPoint(double zeropintValue);
+        public double Atm { get; set; }
     }
 }

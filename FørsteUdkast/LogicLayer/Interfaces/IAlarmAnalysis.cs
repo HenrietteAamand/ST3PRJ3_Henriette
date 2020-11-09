@@ -6,6 +6,6 @@ namespace LogicLayer
     {
         public double MAP { get; set; }
 
-        public bool GetAlarm(DtoMeassuredDataFs _meassuredData);
+        public bool GetAlarm(DtoMeassuredDataFs _meassuredData, double map);
     }
 }

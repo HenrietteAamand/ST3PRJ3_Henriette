@@ -26,5 +26,11 @@ namespace DataLayer
             double bloodpeassure = hældning * meassured + skæring;
             return bloodpeassure;
         }
+
+        public double ReadElectricalSize()
+        {
+            double meassured = adc.ReadPressure();
+            return meassured;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace LogicLayer
             TransferDataToBM transferData = new TransferDataToBM();
             BatteryLevel batteryLevel = new BatteryLevel();
             ZeroPointAdjustment zeroPointAdjust = new ZeroPointAdjustment();
-            BloodPreassure blodPreassure = new BloodPreassure();
+            BloodPressure blodPreassure = new BloodPressure();
             ITransducer transducer = new Transducer();
 
             zeroPointAdjust.Transducer = transducer;

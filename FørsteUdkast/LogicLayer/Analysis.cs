@@ -11,6 +11,7 @@ namespace LogicLayer
         private BlockingCollection<DtoBpRaw> _dataQueue2;
         private BlockingCollection<Dto_AnalysisBP> _dataQueue3;
         private DtoMeassuredDataFs OneSecondOfData;
+        private IMapCalculater mapCalculater;
 
         //Alle analysemetoderne
         public IAlarmAnalysis Alarmanalysis { get; set; }
@@ -31,7 +32,8 @@ namespace LogicLayer
             _dataQueue2 = dataQueue2;
             _dataQueue3 = dataQueue3;
             OneSecondOfData = new DtoMeassuredDataFs();
-            PulseAnalysis = new PulseAnalysis();
+            PulseAnalysis = new PulseAnalysis(StaticVariables);
+            mapCalculater = new MapCalculator5Periods();
 
         }
         public void AnalyseMeasurement()
@@ -43,19 +45,17 @@ namespace LogicLayer
 
                     var container =  _dataQueue2.Take(); // .Take Tager måske alle DTO objekterne og fjerner dem fra listen.
 
-                    foreach (var measurement in container.Measurement)
-                    {
-                        OneSecondOfData.MeassureDoubles.Add(measurement);
-                    }
+                    OneSecondOfData.MeassureDoubles.AddRange(container.Measurement);
 
                     if (OneSecondOfData.MeassureDoubles.Count >= StaticVariables.SampleFrequense)
                     {
-                        alarm = Alarmanalysis.GetAlarm(OneSecondOfData);
-                        pulse = PulseAnalysis.GetPulse(OneSecondOfData);
-                        DiaAndSystolicAnalysis.GetSysAndDiastolic(OneSecondOfData);
+                        MAP = mapCalculater.calculateMAP(OneSecondOfData);
+                        alarm = Alarmanalysis.GetAlarm(OneSecondOfData,MAP);
+                        pulse = PulseAnalysis.GetPulse(OneSecondOfData, MAP);
+                        DiaAndSystolicAnalysis.GetSysAndDiastolic(OneSecondOfData, MAP);
                         diastolic = DiaAndSystolicAnalysis.Diastolic;
                         systolic = DiaAndSystolicAnalysis.Systolic;
-                        MAP = Alarmanalysis.MAP;
+                        
 
                         //Opdaterer readingAnalysis DTO'en
                         readingAnalysis = new Dto_AnalysisBP(systolic, diastolic, pulse, alarm, MAP, DateTime.Now);
@@ -74,7 +74,7 @@ namespace LogicLayer
 
                 }
 
-                Thread.Sleep(10);
+                Thread.Sleep(10); //Why???
 
             }
         }

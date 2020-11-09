@@ -26,6 +26,11 @@ namespace DataLayer
 
         }
 
+        public void TransferZeroPointStarted()
+        {
+            
+        }
+
         public void TransferPatientInfo(object dto_PatientInfo)
         {
             throw new NotImplementedException();

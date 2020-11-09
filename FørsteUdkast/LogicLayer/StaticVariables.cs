@@ -2,7 +2,7 @@
 {
     public class StaticVariables
     {
-        public int SampleFrequense { get; private set; }
+        public double SampleFrequense { get; private set; }
         public int DoubleNyquist { get; private set; }
 
         //Den tid hvormed vi beregner om der er fald i blodtryk

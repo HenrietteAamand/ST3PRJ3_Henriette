@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using DTO;
 
@@ -8,11 +9,20 @@ namespace LogicLayer
     {
         private List<double> MAPList = new List<double>();
         private List<double> MeassurementsList = new List<double>();
+        private List<double> index = new List<double>();
         private double hysteresisLow;
         private double hysteresisHigh;
-        private double mAP;
-        public StaticVariables StaticVariables { get; set; }
-        private int puls = 0;
+        private double MAP;
+        private StaticVariables StaticVariables;
+        private int puls;
+        private double ts;
+
+
+        public PulseAnalysis(StaticVariables staticVariables)
+        {
+            StaticVariables = staticVariables;
+            ts = 1.0 / staticVariables.SampleFrequense;
+        }
         
 
        /*
@@ -23,13 +33,14 @@ namespace LogicLayer
         *
         */
 
-        public int GetPulse(DtoMeassuredDataFs meassuredData)
+        public int GetPulse(DtoMeassuredDataFs meassuredData, double map)
         {
+            MAP = map;
             bool canRegisterPulse = true;
             puls = 0;
-            GetMAP(meassuredData);
-            hysteresisLow = mAP - 5;
-            hysteresisHigh = mAP + 5;
+            hysteresisLow = MAP - 5;
+            hysteresisHigh = MAP + 5;
+            index.Clear();
 
             //Opdaterer MeassurementList
             if (MeassurementsList.Count >= StaticVariables.SampleFrequense * 10)
@@ -39,55 +50,25 @@ namespace LogicLayer
             MeassurementsList.AddRange(meassuredData.MeassureDoubles);
 
             //Finder antal puls - algoritme
-            foreach (double meassurement in MeassurementsList)
+            //Det nye er, at jeg gemmer indexet hvor der gemmes højt, og så deler trækker jeg første index fra sidste og 
+
+            for (int i = 0; i < MeassurementsList.Count - 1; i++)
             {
-                if (meassurement > hysteresisHigh && canRegisterPulse == true)
+                if (MeassurementsList[i] >= hysteresisHigh && canRegisterPulse == true)
                 {
                     canRegisterPulse = false;
-                    puls++;
+                    index.Add(i);
                 }
-
-                if (meassurement < hysteresisLow)
+                else if (MeassurementsList[i] <= hysteresisLow)
                 {
                     canRegisterPulse = true;
                 }
             }
 
-            //Omregner fra de trregistrerede pulse, til antal pulse pr minut
-            puls = puls * 6;
-
+            //Omregner fra de registrerede pulse, til antal pulse pr minut
+            double tiden = (index[index.Count - 1] - index[0]) * ts;
+            puls = Convert.ToInt32(((index.Count - 1) / tiden) * 60);
             return puls;
-        }
-
-        public double GetMAP(DtoMeassuredDataFs meassuredData)
-        {
-            //Vi beregner mean arterial bloodpreassure over 10 perioder. De gemmes i en liste
-            double singleMAP = 0;
-
-            //Beregner MAP af de nyeste data
-            foreach (double bloodPrreassure in meassuredData.MeassureDoubles)
-            {
-                singleMAP += bloodPrreassure;
-            }
-            singleMAP = singleMAP / meassuredData.MeassureDoubles.Count;
-
-            //Gemmer det nye MAP i listen
-            if (MAPList.Count >= 10)
-            {
-                MAPList.RemoveAt(0);
-            }
-            MAPList.Add(singleMAP);
-
-            //Beregner nu MAP for de seneste fire målinger
-            mAP = 0;
-            foreach (double MAP in MAPList)
-            {
-                mAP += MAP;
-            }
-
-            mAP = mAP / MAPList.Count;
-
-            return mAP;
         }
     }
 }
